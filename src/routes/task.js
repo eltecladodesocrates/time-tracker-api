@@ -30,4 +30,28 @@ router.post('/task', async (req, res) => {
     
 })
 
+router.patch('/task/:id', async (req, res) => {
+
+    try {
+        const task = await Task.findById(req.params.id)
+        task.name = req.body.name
+        await task.save()
+        res.send(task)
+    } catch (e) {
+        res.send(e)
+    }
+
+})
+
+router.delete('/task/:id', async (req, res) => {
+
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id)
+        res.send(task)
+    } catch (e) {
+        res.send(e)
+    }
+    
+})
+
 module.exports = router
