@@ -19,11 +19,31 @@ router.post('/user', async (req, res) => {
 
 })
 
+router.post('/user/login', async (req, res) => {
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        res.send(user)
+    } catch (e) {
+        res.send(e)
+    }
+})
+
 router.patch('/user/:id', async (req, res) => {
 
-    const user = req.body
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name', 'email', 'password']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+    if(!isValidOperation) {
+        return res.send({ error: 'Invalid updates' })
+    }
     try {
-        await User.findByIdAndUpdate(req.params.id, user)
+        // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        const user = await User.findById(req.params.id)
+        updates.forEach((update) => user[update] = req.body[update])
+        await user.save()
+        if(!user) {
+            return res.status(404).send()
+        }
         res.send(user)
     } catch (e) {
         res.send(e)
