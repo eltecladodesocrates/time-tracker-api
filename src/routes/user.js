@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 
 const router = new express.Router()
 
@@ -28,6 +29,10 @@ router.post('/user/login', async (req, res) => {
     } catch (e) {
         res.send(e)
     }
+})
+
+router.get('/user/me', auth, async (req, res) => {
+    res.send(req.user)
 })
 
 router.patch('/user/:id', async (req, res) => {
