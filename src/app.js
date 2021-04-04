@@ -17,8 +17,3 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
 
-const pet = {
-    name: 'Kin'
-}
-
-console.log(JSON.stringify(pet))
