@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const auth = require('../middleware/auth')
 
 const Task = require('../models/task')
 
@@ -27,16 +28,17 @@ router.get('/task:id', async (req, res) => {
 
 })
 
-router.post('/task', async (req, res) => {
+router.post('/task', auth, async (req, res) => {
 
     const task = new Task({
-        name: req.body.name
+        ...req.body,
+        owner: req.user._id
     })
     try {
         await task.save()
         res.send(task)
     } catch (e) {
-        res.send(e)
+        res.status(400).send(e)
     }
     
 })
